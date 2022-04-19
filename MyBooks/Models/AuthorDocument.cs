@@ -2,10 +2,13 @@
 
 namespace MyBooks.Models
 {
-  public class Author
+  public class AuthorDocument
   {
     [JsonProperty("id")]
     public Guid Id { get; set; }
+
+    [JsonProperty("type")]
+    public string Type { get; } = "author";
 
     [JsonProperty("name")]
     public string Name { get; set; }

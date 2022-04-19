@@ -7,14 +7,17 @@ namespace MyBooks.Models
     [JsonProperty("id")]
     public Guid Id { get; set; }
 
+    [JsonProperty("type")]
+    public string Type { get; } = "book";
+
     [JsonProperty("title")]
     public string Title { get; set; }
 
     [JsonProperty("authors")]
-    public AuthorShorthandDocument[] Authors { get; set; }  
+    public AuthorShorthandDocument[] Authors { get; set; }
 
-    [JsonProperty("type")]
-    public string Type { get; set; }
+    [JsonProperty("bookType")]
+    public string BookType { get; set; }
 
     [JsonProperty("genre")]
     public string Genre { get; set; }
