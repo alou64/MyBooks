@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MyBooks.Services;
 using MyBooks.Models;
 using MyBooks.Repositories;
 
@@ -10,26 +9,32 @@ namespace MyBooks.Controllers
   [ApiController]
   public class AuthorsController : ControllerBase
   {
-    private readonly ICosmosDbService _cosmosDbService;
+        private IAuthorRepository authorRepository;
 
-    // inject cosmosDbService
-    public AuthorsController(ICosmosDbService cosmosDbService)
-    {
-      _cosmosDbService = cosmosDbService ?? throw new ArgumentNullException(nameof(cosmosDbService));
-    }
+        public AuthorsController(
+            IAuthorRepository authorRepository)
+        {
+            this.authorRepository = authorRepository;
+        }
 
+        
     // GET api/authors
     [HttpGet]
     public async Task<IActionResult> GetAuthors()
     {
-      return Ok(await AuthorRepository.GetAuthors<AuthorDocument>());   
+            var authors = await authorRepository.GetAuthorsAsync();
+            if (authors == null)
+            {
+                return NotFound();
+            }
+      return Ok(authors);   
     }
 
     // GET api/authors/{id}
     [HttpGet("{id}")]
     public async Task<IActionResult> GetAuthor(Guid id)
     {
-      return Ok(await AuthorRepository.GetAuthor<AuthorDocument>(id));
+      return Ok(await authorRepository.GetAuthorAsync(id));
     }
 
     // GET api/authors/{id}/books
@@ -43,15 +48,15 @@ namespace MyBooks.Controllers
     [HttpPost]
     public async Task<IActionResult> CreateAuthor([FromBody] AuthorDocument author)
     {
-      author = AuthorRepository<AuthorDocument>(author);
-      return CreatedAtAction(nameof(GetAuthor), new { id = author.Id }, author);
+      string authorId = await authorRepository.CreateAuthorAsync(author);
+      return CreatedAtAction(nameof(GetAuthor), new { id = authorId }, author);
     }
 
     // PUT api/authors/{id}
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateAuthor([FromBody] AuthorDocument author)
     {
-      await AuthorRepository.UpdateAuthor(author);
+      await authorRepository.UpdateAuthorAsync(author);
       return NoContent();
     }
 
@@ -59,7 +64,7 @@ namespace MyBooks.Controllers
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAuthor(Guid id)
     {
-      await AuthorRepository.DeleteAuthor(id);
+      await authorRepository.DeleteAuthorAsync(id);
       return NoContent();
     }
   }

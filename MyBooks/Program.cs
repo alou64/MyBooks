@@ -1,5 +1,6 @@
 using MyBooks.Services;
 using System.Configuration;
+using MyBooks.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<ICosmosDbService>(InitializeCosmosClientInstanceAsync(builder.Configuration.GetSection("CosmosDb")).GetAwaiter().GetResult());
+builder.Services.AddSingleton<IAuthorRepository, AuthorRepository>();
 
 var app = builder.Build();
 

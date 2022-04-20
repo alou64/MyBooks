@@ -3,7 +3,7 @@ using MyBooks.Models;
 
 namespace MyBooks.Repositories
 {
-  public class AuthorRepository
+  public class AuthorRepository : IAuthorRepository
   {
     private readonly ICosmosDbService _cosmosDbService;
 
@@ -14,33 +14,33 @@ namespace MyBooks.Repositories
     }
 
     // GET all authors
-    public async Task<IEnumerable<AuthorDocument>> GetAuthors()
+    public async Task<IEnumerable<AuthorDocument>> GetAuthorsAsync()
     {
-      return _cosmosDbService.GetMultipleAsync<AuthorDocument>("SELECT * FROM c where c.type = \"Author\"");
+      return await _cosmosDbService.GetMultipleAsync<AuthorDocument>("SELECT * FROM c where c.type = \"Author\"");
     }
 
     // GET author
-    public async Task<AuthorDocument> GetAuthor(Guid id)
+    public async Task<AuthorDocument> GetAuthorAsync(Guid id)
     {
-      return _cosmosDbService.GetAsync<AuthorDocument>(id.ToString(), id.ToString());
+      return await _cosmosDbService.GetAsync<AuthorDocument>(id.ToString(), id.ToString());
     }
 
     // POST author
-    public async Task<AuthorDocument> CreateAuthor(AuthorDocument author)
+    public async Task<string> CreateAuthorAsync(AuthorDocument author)
     {
       author.Id = Guid.NewGuid();
       await _cosmosDbService.AddAsync<AuthorDocument>(author, author.Id.ToString());
-      return author;
+      return author.Id.ToString();
     }
 
     // PUT author
-    public async Task<AuthorDocument> UpdateAuthor(AuthorDocument author)
+    public async Task UpdateAuthorAsync(AuthorDocument author)
     {
-      await _cosmosDbService.UpdateAsync(author, author.Id.ToString());
+      await _cosmosDbService.UpdateAsync<AuthorDocument>(author, author.Id.ToString());
     }
 
     // DELETE author
-    public async Task<AuthorDocument> DeleteAuthor(Guid id)
+    public async Task DeleteAuthorAsync(Guid id)
     {
       await _cosmosDbService.DeleteAsync<AuthorDocument>(id.ToString(), id.ToString());
     }
