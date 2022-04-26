@@ -10,9 +10,9 @@ namespace MyBooks.Models
     [JsonProperty("title")]
     public string Title { get; set; }
 
-    [Required]
-    [JsonProperty("authors")]
-    public List<AuthorShorthandDocument> Authors { get; set; }
+    //[Required]
+    //[JsonProperty("authors")]
+    //public List<AuthorShorthandDocument> Authors { get; set; }
 
     [MaxLength(20)]
     [JsonProperty("bookType")]

@@ -125,7 +125,6 @@ namespace MyBooks.Repositories
          {
             // check if author exists
             var author = await GetAuthorAsync(authorId);
-            //var author = await _cosmosDbService.GetAsync<AuthorDocument>(authorId.ToString(), authorId.ToString());
             ArgumentNullException.ThrowIfNull(author);
 
             // create AuthorShorthandDocument and add to authorList
@@ -175,7 +174,6 @@ namespace MyBooks.Repositories
 
          // update fields
          book.Title = bookForUpdate.Title;
-         book.Authors = bookForUpdate.Authors;
          book.BookType = bookForUpdate.BookType;
          book.Genre = bookForUpdate.Genre;
          book.PublicationDate = bookForUpdate.PublicationDate;
@@ -194,6 +192,87 @@ namespace MyBooks.Repositories
             book = await GetBookAsync(id);
             ArgumentNullException.ThrowIfNull(book);
          }
+
+         // delete book from author
+         foreach (var author in book.Authors)
+         {
+            var authorFromDb = await GetAuthorAsync(author.Id);
+            authorFromDb.Books.RemoveAll(x => x.Id == book.Id);
+            await _cosmosDbService.UpdateAsync<AuthorDocument>(authorFromDb, authorFromDb.Id.ToString());
+         }
+
+         // delete book from db
+         await _cosmosDbService.DeleteAsync<BookDocument>(id.ToString(), id.ToString());
+      }
+
+      // GET all lists
+      public async Task<IEnumerable<ListDocument>> GetListsAsync()
+      {
+         return await _cosmosDbService.GetMultipleAsync<ListDocument>("SELECT * FROM c where c.type = \"List\"");
+      }
+
+      // GET list
+      public async Task<ListDocument> GetListAsync(Guid id)
+      {
+         return await _cosmosDbService.GetAsync<ListDocument>(id.ToString(), id.ToString());
+      }
+
+      // POST list
+      public async Task<string> CreateListAsync(ListForCreationDocument list)
+      {
+         // verify that books exist and create list of book items
+         List<BookListItemDocument> bookList = new List<BookListItemDocument>(); 
+         foreach (var book in list.Books)
+         {
+            var bookFromDb = await GetBookAsync(book);
+            ArgumentNullException.ThrowIfNull(bookFromDb);
+            bookList.Add(new BookListItemDocument()
+            {
+               Id = bookFromDb.Id,
+               Title = bookFromDb.Title,
+               Authors = bookFromDb.Authors
+            });
+         }
+
+         // create new list from ListForCreationDocument
+         var finalList = new ListDocument()
+         {
+            Id = Guid.NewGuid(),
+            Name = list.Name,
+            Description = list.Description,
+            Books = bookList,
+         };
+
+         // add list to db
+         await _cosmosDbService.AddAsync<ListDocument>(finalList, finalList.Id.ToString());
+
+         // return list id
+         return finalList.Id.ToString();
+      }
+
+      // PUT or PATCH list
+      public async Task UpdateListAsync(Guid id, ListForUpdateDocument listForUpdate, ListDocument list)
+      {
+         // query list if null
+         if (list == null)
+         {
+            list = await GetListAsync(id);
+            ArgumentNullException.ThrowIfNull(list);
+         }
+
+         // update fields
+         list.Name = listForUpdate.Name;
+
+         // update db
+         await _cosmosDbService.UpdateAsync<ListDocument>(list, id.ToString());
+      }
+
+      // DELETE list
+      public async Task DeleteListAsync(Guid id)
+      {
+         // check if list exists
+            book = await GetBookAsync(id);
+            ArgumentNullException.ThrowIfNull(book);
 
          // delete book from author
          foreach (var author in book.Authors)

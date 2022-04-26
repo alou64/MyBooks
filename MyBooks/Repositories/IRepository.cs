@@ -15,5 +15,10 @@ namespace MyBooks.Repositories
       Task<string> CreateBookAsync(BookForCreationDocument book);
       Task UpdateBookAsync(Guid id, BookForUpdateDocument bookForUpdate, BookDocument book);
       Task DeleteBookAsync(Guid id, BookDocument book);
+      Task<IEnumerable<ListDocument>> GetListsAsync();
+      Task<BookDocument> GetListAsync(Guid id);
+      Task<string> CreateListAsync(ListForCreationDocument list);
+      Task UpdateListAsync(Guid id, ListForUpdateDocument listForUpdate, ListDocument list);
+      Task DeleteListAsync(Guid id);
    }
 }

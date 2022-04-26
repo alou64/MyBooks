@@ -82,7 +82,6 @@ namespace MyBooks.Controllers
            new BookForUpdateDocument()
            {
               Title = bookFromDb.Title,
-              Authors = bookFromDb.Authors,
               BookType = bookFromDb.BookType,
               Genre = bookFromDb.Genre,
               PublicationDate = bookFromDb.PublicationDate,
