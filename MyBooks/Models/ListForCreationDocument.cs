@@ -3,16 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyBooks.Models
 {
-   public class ListDocument
+   public class ListForCreationDocument
    {
-      [Required]
-      [JsonProperty("id")]
-      public Guid Id { get; set; }
-
-      [Required]
-      [JsonProperty("type")]
-      public string Type { get; } = "List";
-
       [Required]
       [MaxLength(100)]
       [JsonProperty("name")]
@@ -24,6 +16,6 @@ namespace MyBooks.Models
 
       [Required]
       [JsonProperty("books")]
-      public List<BookListItemDocument> Books { get; set; } = new List<BookListItemDocument>();
+      public List<Guid> Books { get; set; } = new List<Guid>();
    }
 }

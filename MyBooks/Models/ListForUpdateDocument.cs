@@ -3,16 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyBooks.Models
 {
-   public class ListDocument
+   public class ListForUpdateDocument
    {
-      [Required]
-      [JsonProperty("id")]
-      public Guid Id { get; set; }
-
-      [Required]
-      [JsonProperty("type")]
-      public string Type { get; } = "List";
-
       [Required]
       [MaxLength(100)]
       [JsonProperty("name")]

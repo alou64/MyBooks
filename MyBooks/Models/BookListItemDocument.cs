@@ -1,19 +1,25 @@
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyBooks.Models
 {
-  public class BookListItemDocument
-  {
-    [JsonProperty("id")]
-    public Guid Id { get; set; }
+   public class BookListItemDocument
+   {
+      [Required]
+      [JsonProperty("id")]
+      public Guid Id { get; set; }
 
-    [JsonProperty("title")]
-    public string Title { get; set; }
+      [Required]
+      [MaxLength(100)]
+      [JsonProperty("title")]
+      public string Title { get; set; }
 
-    [JsonProperty("authors")]
-    public AuthorShorthandDocument[] Authors { get; set; }
+      [Required]
+      [JsonProperty("authors")]
+      public List<AuthorShorthandDocument> Authors { get; set; }
 
-    [JsonProperty("dateAdded")]
-    public DateTime DateAdded { get; set; }
-  }
+      [Required]
+      [JsonProperty("dateAdded")]
+      public DateTime DateAdded { get; set; } = DateTime.Now;
+   }
 }

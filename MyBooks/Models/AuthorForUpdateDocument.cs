@@ -3,16 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MyBooks.Models
 {
-  public class AuthorDocument
+  public class AuthorForUpdateDocument
   {
-    [Required]
-    [JsonProperty("id")]
-    public Guid Id { get; set; }
-
-    [Required]
-    [JsonProperty("type")]
-    public string Type { get; } = "Author";
-
     [Required]
     [MaxLength(60)]
     [JsonProperty("name")]
@@ -24,13 +16,12 @@ namespace MyBooks.Models
     [JsonProperty("died")]
     public DateTime? Died { get; set; }
 
+    [MaxLength(30)]
     [JsonProperty("nationality")]
-    public string Nationality { get; set; }
+    public string? Nationality { get; set; }
 
+    [MaxLength(500)]
     [JsonProperty("biography")]
-    public string Biography { get; set; }
-
-    [JsonProperty("books")]
-    public List<BookShorthandDocument> Books { get; set; } = new List<BookShorthandDocument>();
+    public string? Biography { get; set; }
   }
 }
