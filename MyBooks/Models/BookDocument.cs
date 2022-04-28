@@ -27,5 +27,8 @@ namespace MyBooks.Models
 
       [JsonProperty("description")]
       public string? Description { get; set; }
+
+      [JsonProperty("lists")]
+      public List<ListShorthandDocument> Lists { get; set; }
    }
 }

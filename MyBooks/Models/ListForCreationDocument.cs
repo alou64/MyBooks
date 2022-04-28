@@ -14,7 +14,6 @@ namespace MyBooks.Models
       [JsonProperty("description")]
       public string Description { get; set; }
 
-      [Required]
       [JsonProperty("books")]
       public List<Guid> Books { get; set; } = new List<Guid>();
    }

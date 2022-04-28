@@ -13,9 +13,5 @@ namespace MyBooks.Models
       [MaxLength(500)]
       [JsonProperty("description")]
       public string Description { get; set; }
-
-      [Required]
-      [JsonProperty("books")]
-      public List<BookListItemDocument> Books { get; set; } = new List<BookListItemDocument>();
    }
 }

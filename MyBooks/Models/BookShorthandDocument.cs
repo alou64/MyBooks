@@ -1,13 +1,17 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace MyBooks.Models
 {
-  public class BookShorthandDocument
-  {
-    [JsonProperty("id")]
-    public Guid Id { get; set; }
+   public class BookShorthandDocument
+   {
+      [Required]
+      [JsonProperty("id")]
+      public Guid Id { get; set; }
 
-    [JsonProperty("title")]
-    public string Title { get; set; }
-  }
+      [Required]
+      [MaxLength(100)]
+      [JsonProperty("title")]
+      public string Title { get; set; }
+   }
 }

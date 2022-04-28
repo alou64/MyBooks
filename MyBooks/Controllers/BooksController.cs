@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using MyBooks.Models;
-using MyBooks.Services;
 using MyBooks.Repositories;
-using Microsoft.AspNetCore.JsonPatch;
 
 namespace MyBooks.Controllers
 {
@@ -107,7 +106,7 @@ namespace MyBooks.Controllers
       {
          try
          {
-            await repository.DeleteBookAsync(id, null);
+            await repository.DeleteBookAsync(id, null, true);
          }
          catch (ArgumentNullException)
          {
