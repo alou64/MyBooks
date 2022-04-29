@@ -78,7 +78,7 @@ namespace MyBooks.Repositories
 			author.Biography = authorForUpdate.Biography;
 
 			// update db
-			await _cosmosDbService.UpdateAsync<AuthorDocument>(author, id.ToString());
+			await _cosmosDbService.UpdateAsync(author, id.ToString());
 		}
 
 		// DELETE author
@@ -316,7 +316,16 @@ namespace MyBooks.Repositories
 			var list = await GetListAsync(id);
 			ArgumentNullException.ThrowIfNull(list);
 
-			// TODO: remove book lists
+			// remove list from books
+			foreach (var bookItem in list.Books)
+         {
+				var book = await GetBookAsync(bookItem.Id);
+				if (book != null)
+				{
+					book.Lists.RemoveAll(list => list.Id == id);
+					await _cosmosDbService.UpdateAsync(book, book.Id.ToString());
+				}
+         }
 
 			// delete book from db
 			await _cosmosDbService.DeleteAsync<BookDocument>(id.ToString(), id.ToString());
