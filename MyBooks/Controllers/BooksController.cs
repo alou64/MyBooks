@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using MyBooks.Models;
-using MyBooks.Services;
 using MyBooks.Repositories;
-using Microsoft.AspNetCore.JsonPatch;
 
 namespace MyBooks.Controllers
 {
@@ -71,8 +70,8 @@ namespace MyBooks.Controllers
       public async Task<IActionResult> PartialUpdateBook(Guid id, [FromBody] JsonPatchDocument<BookForUpdateDocument> patchDoc)
       {
          // get book and check if null
-         var bookFromDb = await repository.GetBookAsync(id);
-         if (bookFromDb == null)
+         var book = await repository.GetBookAsync(id);
+         if (book == null)
          {
             return NotFound();
          }
@@ -81,11 +80,11 @@ namespace MyBooks.Controllers
          var bookToPatch =
            new BookForUpdateDocument()
            {
-              Title = bookFromDb.Title,
-              BookType = bookFromDb.BookType,
-              Genre = bookFromDb.Genre,
-              PublicationDate = bookFromDb.PublicationDate,
-              Description = bookFromDb.Description
+              Title = book.Title,
+              BookType = book.BookType,
+              Genre = book.Genre,
+              PublicationDate = book.PublicationDate,
+              Description = book.Description
            };
 
          patchDoc.ApplyTo(bookToPatch);
@@ -96,7 +95,7 @@ namespace MyBooks.Controllers
             return BadRequest(ModelState);
          }
 
-         await repository.UpdateBookAsync(id, bookToPatch, bookFromDb);
+         await repository.UpdateBookAsync(id, bookToPatch, book);
 
          return NoContent();
       }
@@ -107,11 +106,46 @@ namespace MyBooks.Controllers
       {
          try
          {
-            await repository.DeleteBookAsync(id, null);
+            await repository.DeleteBookAsync(id, null, true);
          }
          catch (ArgumentNullException)
          {
             return NotFound();
+         }
+         return NoContent();
+      }
+
+      // POST api/books/{id}/authors
+      [HttpPost("{id}/authors")]
+      public async Task<IActionResult> AddBookAuthor(Guid id, [FromBody] Guid authorId)
+      {
+         try
+         {
+            await repository.AddBookAuthorAsync(id, null, authorId, null);
+         }
+         catch (ArgumentNullException)
+         {
+            return NotFound();
+         }
+         
+         return NoContent();
+      }
+
+      // DELETE api/books/{id}/authors/{authorId}
+      [HttpDelete("{id}/authors/{authorId")]
+      public async Task<IActionResult> RemoveBookAuthor(Guid id, Guid authorId)
+      {
+         try
+         {
+            await repository.RemoveBookAuthorAsync(id, null, authorId, null);
+         }
+         catch (ArgumentNullException)
+         {
+            return NotFound();
+         }
+         catch (InvalidOperationException)
+         {
+            return BadRequest();
          }
          return NoContent();
       }
